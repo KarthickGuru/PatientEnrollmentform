@@ -1,0 +1,492 @@
+package enrollment;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Careprogram {
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+
+		String excelFilePath = "C:\\Users\\CVHS ADMIN\\eclipse-workspace\\Testdemo\\Datafiles\\Pantientinforeadfile.xlsx";
+		FileInputStream fileInputStream = null;
+		XSSFWorkbook workbook = null;
+		WebDriver driver = null;
+
+		try {
+
+			excelFilePath = "C:\\Users\\CVHS ADMIN\\eclipse-workspace\\Testdemo\\Datafiles\\Pantientinforeadfile.xlsx";
+			fileInputStream = new FileInputStream(excelFilePath);
+			workbook = new XSSFWorkbook(fileInputStream);
+			XSSFSheet sheet = workbook.getSheet("Sheet1");
+
+			driver = null;
+
+			int rows = sheet.getLastRowNum();
+
+			System.out.println("Total Rows: " + rows);
+			for (int i = 1; i < rows; i++) {
+
+				if (i == 0) {
+
+					driver = new FirefoxDriver();
+				}
+
+				if (i == 1) {
+					driver = new ChromeDriver();
+
+				}
+
+				else if (i == 2) {
+					driver = new EdgeDriver();
+
+				}
+
+				else if (i == 3) {
+					driver = new ChromeDriver();
+
+				}
+
+				else {
+
+				}
+
+				JavascriptExecutor js = (JavascriptExecutor) driver;
+
+				driver.manage().window().maximize();
+				driver.get("https://bi-patient-eu--pspdev1.sandbox.my.site.com/Branded/s/");
+
+				Thread.sleep(3000);
+
+				driver.findElement(By.xpath("//button[text()='I am a Patient']")).click();
+
+				WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100));
+				WebElement enrollbutton = wait.until(ExpectedConditions.elementToBeClickable(
+						By.xpath("(//button[text()='Enroll In To The Spevigo® Patient Support Program'])[2]")));
+
+				js.executeScript("arguments[0].click();", enrollbutton);
+
+				XSSFRow row = sheet.getRow(i);
+
+				String firstname = row.getCell(0).getStringCellValue();
+				String lastname = row.getCell(1).getStringCellValue();
+
+				validateName("First Name", firstname);
+				validateName("Last Name", lastname);
+
+				String email = row.getCell(2).getStringCellValue();
+
+				validateEmail(email);
+
+				String gender = row.getCell(3).getStringCellValue();
+				
+				String radio = row.getCell(4).getStringCellValue();
+				/*
+				 * double phoneno = row.getCell(5).getNumericCellValue(); String mobile =
+				 * String.valueOf(phoneno);
+				 */
+
+				String mobile = "6374365586";
+
+				validatePhone(mobile);
+
+				String PMC = row.getCell(6).getStringCellValue();
+				String country = row.getCell(7).getStringCellValue();
+				String state = row.getCell(8).getStringCellValue();
+				String city = row.getCell(9).getStringCellValue();
+				String street = row.getCell(10).getStringCellValue();
+				double pincode = row.getCell(11).getNumericCellValue();
+				String zipcode = String.valueOf((int) pincode);
+
+				Thread.sleep(7000);
+
+				WebElement next = driver.findElement(By.xpath("//button[text()='Next']"));
+
+				next.click();
+
+				Thread.sleep(3000);
+
+				if (firstname.isEmpty()) {
+					System.out.println("Firstname field is required");
+				} else {
+					System.out.println("User entered the firstname is :" + firstname);
+				}
+
+				if (lastname.isEmpty()) {
+					System.out.println("lastname field is required");
+				} else {
+					System.out.println("User entered the lastname is :" + lastname);
+				}
+
+				if (email.isEmpty()) {
+					System.out.println("email field is required");
+				} else {
+					System.out.println("User entered the email is :" + email);
+				}
+
+				if (gender.isEmpty()) {
+					System.out.println("gender field is required");
+				} else {
+					System.out.println("User selected the DOB is :" + gender);
+				}
+
+				if (email.isEmpty()) {
+					System.out.println("Email field is required");
+				} else {
+					System.out.println("User selected the gender is :" + email);
+				}
+
+				if (radio.isEmpty()) {
+					System.out.println("radio buttons is unchecked");
+				} else {
+					System.out.println("User checked the radio button option is :" + radio);
+				}
+
+				if (mobile.isEmpty()) {
+					System.out.println("Phonenumber field is required");
+				} else {
+					System.out.println("User entered the phonenumber is :" + mobile);
+				}
+
+				if (PMC.isEmpty()) {
+					System.out.println("preffered mode of communication field is required");
+				} else {
+					System.out.println("User selected the preffered mode of communication is :" + PMC);
+				}
+
+				if (country.isEmpty()) {
+					System.out.println("Country field is required");
+				} else {
+					System.out.println("User selected the country is :" + country);
+				}
+
+				if (state.isEmpty()) {
+					System.out.println("State field is required");
+				} else {
+					System.out.println("User selected the State is :" + state);
+				}
+
+				if (city.isEmpty()) {
+					System.out.println("city field is required");
+				} else {
+					System.out.println("User entered the city is :" + city);
+				}
+
+				if (zipcode.isEmpty()) {
+					System.out.println("zipcode field is required");
+				}
+				{
+					System.out.println("User entered the zipcode is :" + zipcode);
+				}
+
+				Thread.sleep(3000);
+
+				WebElement firstNameField = driver.findElement(By.xpath("//input[@placeholder='Enter First Name']"));
+				firstNameField.clear();
+				firstNameField.sendKeys(firstname);
+
+				WebElement lastNameField = driver.findElement(By.xpath("//input[@placeholder='Enter Last Name']"));
+				lastNameField.clear();
+
+				lastNameField.sendKeys(lastname);
+
+				WebElement emailField = driver.findElement(By.xpath("//input[@placeholder='Enter Email']"));
+				emailField.clear();
+				emailField.sendKeys(email);
+
+				driver.findElement(By.xpath(
+						"//button[@class='slds-combobox__input slds-input_faux fix-slds-input_faux' and @aria-controls='dropdown-element-12']"))
+						.click();
+				Thread.sleep(1000);
+				switch (gender) {
+				case "Male":
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Male']")).click();
+					break;
+				case "Female":
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Female']")).click();
+					break;
+				case "Other":
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Other']")).click();
+					break;
+				default:
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Prefer not to say']"))
+							.click();
+					break;
+				}
+
+				Thread.sleep(20000);
+				driver.findElement(By.xpath("//button[text()='Next']")).click();
+
+				Thread.sleep(1000);
+
+				if (radio.equals("Yes")) {
+
+					List<WebElement> radioButtons = driver
+							.findElements(By.xpath("//input[@class='radio-btn' and @value='Yes']"));
+					for (WebElement e : radioButtons) {
+						if (e.getAttribute("value").equalsIgnoreCase("Yes")) {
+							Thread.sleep(4000);
+							e.click();
+							break;
+
+						}
+
+					}
+
+					Thread.sleep(2000);
+
+					driver.findElement(By.xpath("(//button[@class='next-button' and text()='Next'])[2]")).click();
+
+					Thread.sleep(2000);
+
+					driver.findElement(By.xpath("//input[@class='slds-input' and @placeholder='Enter Access Code']"))
+							.sendKeys("F8EDRM");
+				}
+
+				else if (radio.equals("No")) {
+					List<WebElement> radioButtons = driver
+							.findElements(By.xpath("//input[@class='radio-btn' and @value='No']"));
+					for (WebElement e : radioButtons) {
+						if (e.getAttribute("value").equalsIgnoreCase("No")) {
+							Thread.sleep(3000);
+							e.click();
+							break;
+						}
+					}
+
+					Thread.sleep(2000);
+
+					driver.findElement(By.xpath("(//button[@class='next-button' and text()='Next'])[2]")).click();
+
+					Thread.sleep(2000);
+
+					driver.findElement(
+							By.xpath("//input[@class='slds-input' and @placeholder='Search Physician Name']"))
+							.sendKeys("David Williams");
+					driver.findElement(By.xpath("//span[text()='David Williams | Dermatology | City: Manchester']"))
+							.click();
+				} else {
+
+					List<WebElement> radioButtons = driver
+							.findElements(By.xpath("//input[@class='radio-btn' and @value='No']"));
+					for (WebElement e : radioButtons) {
+						if (e.getAttribute("value").equalsIgnoreCase("No")) {
+							Thread.sleep(3000);
+							e.click();
+							break;
+						}
+					}
+
+					Thread.sleep(2000);
+
+					driver.findElement(By.xpath("//*[local-name()='svg'][@data-key='chevrondown']")).click();
+
+					driver.findElement(By.xpath("(//button[@class='next-button' and text()='Next'])[2]")).click();
+
+					Thread.sleep(1000);
+
+					driver.findElement(
+							By.xpath("(//input[@class='slds-input' and @placeholder='Enter First Name'])[2]"))
+							.sendKeys("Robert");
+
+					driver.findElement(By.xpath("(//input[@class='slds-input' and @placeholder='Enter Last Name'])[2]"))
+							.sendKeys("Junior");
+
+					driver.findElement(
+							By.xpath("(//input[@class='slds-input' and @placeholder='+Enter Phone Number'])[1]"))
+							.sendKeys("+1268765432356");
+
+					driver.findElement(By.xpath("(//input[@class='slds-input' and @placeholder='Enter Email'])[2]"))
+							.sendKeys("robert@gmail.com");
+
+					driver.findElement(
+							By.xpath("(//textarea[@class='slds-textarea' and @placeholder='Enter Address'])[1]"))
+							.sendKeys("robert@gmail.com");
+
+				}
+
+				driver.findElement(By.xpath("(//button[@class='next-button' and text()='Next'])[2]")).click();
+
+				Thread.sleep(2000);
+
+				driver.findElement(By.xpath("//button[@class='next-button' and text()='Submit']")).click();
+
+				Thread.sleep(2000);
+
+				js.executeScript("window.scrollBy(0,-1289)", "");
+
+				Thread.sleep(7000);
+
+				WebElement getphoneelement1 = driver
+						.findElement(By.xpath("//input[@class='slds-input' and @placeholder='+Enter Phone Number']"));
+				/*
+				 * WebElement getphoneelement2 = driver.findElement( By.
+				 * xpath("(//input[@class='slds-input' and @placeholder='+Enter Phone Number'])[2]"
+				 * ));
+				 */
+
+				getphoneelement1.clear();
+
+				WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(40));
+				wait1.until(ExpectedConditions.elementToBeClickable(getphoneelement1)).sendKeys(mobile);
+
+				/*
+				 * getphoneelement2.clear();
+				 * 
+				 * WebDriverWait wait2 = new WebDriverWait(driver, Duration.ofSeconds(40));
+				 * wait1.until(ExpectedConditions.elementToBeClickable(getphoneelement2)).
+				 * sendKeys(mobile);
+				 */
+
+				driver.findElement(By.xpath("//button[@id='combobox-button-24']")).click();
+				Thread.sleep(1000);
+				if (PMC.equals("SMS")) {
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='SMS']")).click();
+				} else if (PMC.equals("Phone")) {
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Phone']")).click();
+				} else {
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Email']")).click();
+				}
+
+				driver.findElement(By.xpath("//button[@id='combobox-button-28' and @name='Country']")).click();
+				Thread.sleep(2000);
+				if (country.equals("United States")) {
+					driver.findElement(By.xpath("(//span[@class='slds-truncate' and text()='United States'])[1]"))
+							.click();
+				} else {
+					System.out.println("Unable to find the country");
+				}
+
+				driver.findElement(By.xpath(
+						"//button[@class='slds-combobox__input slds-input_faux fix-slds-input_faux' and @id='combobox-button-32']"))
+						.click();
+
+				Thread.sleep(2000);
+				WebElement scrolldown = driver
+						.findElement(By.xpath("(//span[@class='slds-truncate' and text()='Washington'])[1]"));
+				js.executeScript("arguments[0].scrollIntoView();", scrolldown);
+				Thread.sleep(1000);
+				if (state.equals("Washington")) {
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and text()='Washington']")).click();
+				} else {
+					driver.findElement(By.xpath("//span[@class='slds-truncate' and @title='Baden-Württemberg']"))
+							.click();
+				}
+
+				driver.findElement(By.xpath("//input[@class='slds-input' and @placeholder='Enter City Name']")).clear();
+				driver.findElement(By.xpath("//input[@class='slds-input' and @placeholder='Enter City Name']"))
+						.sendKeys(city);
+				driver.findElement(By.xpath("//textarea[@class='slds-textarea' and @placeholder='Enter Address']"))
+						.clear();
+				Thread.sleep(1000);
+				driver.findElement(By.xpath("//textarea[@class='slds-textarea' and @placeholder='Enter Address']"))
+						.sendKeys(street);
+				driver.findElement(By.xpath("//input[@class='slds-input' and @placeholder='Enter Zip Code']")).clear();
+				driver.findElement(By.xpath("//input[@class='slds-input' and @placeholder='Enter Zip Code']"))
+						.sendKeys(zipcode);
+
+				Thread.sleep(2000);
+
+				js.executeScript("window.scrollBy(0,1318)", "");
+
+				WebElement checkbox = driver
+						.findElement(By.xpath("//span[@class='custom-checkbox-box_Error' and @data-field='checkbox']"));
+				checkbox.click();
+
+				Thread.sleep(1000);
+
+				WebElement submit = driver.findElement(By.xpath("//button[@class='next-button' and text()='Submit']"));
+
+				submit.click();
+
+				Thread.sleep(3000);
+
+			}
+
+			workbook.close();
+			fileInputStream.close();
+
+		}
+
+		catch (IOException e) {
+			System.out.println("Error occurred while reading the Excel file: " + e.getMessage());
+		} catch (InterruptedException e) {
+			System.out.println("Thread sleep interrupted: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("An unexpected error occurred: " + e.getMessage());
+		} finally {
+			try {
+				if (workbook != null) {
+					workbook.close();
+				}
+			} catch (IOException e) {
+				System.out.println("Error occurred while closing the workbook: " + e.getMessage());
+			}
+		}
+
+	}
+
+	public static void validateName(String nameType, String name) {
+
+		String namePattern = "^[a-zA-Z][a-zA-Z\\s'-]{1,}$";
+		Pattern pattern = Pattern.compile(namePattern);
+		Matcher matcher = pattern.matcher(name);
+
+		if (matcher.matches()) {
+			System.out.println(nameType + " is valid: " + name);
+		} else {
+			System.out.println("please enter an valid " + nameType + "name");
+		}
+	}
+
+	public static void validateEmail(String email) {
+
+		String emailpattern = "String emailRegex = \"^[a-zA-Z0-9_+&*-]+(?:\\\\.[a-zA-Z0-9_+&*-]+)*@\" +\r\n"
+				+ "\"(?:[a-zA-Z0-9-]+\\\\.)+[a-zA-Z]{2,}$\";\r\n" + "";
+
+		Pattern p = Pattern.compile(emailpattern);
+		Matcher m = p.matcher(email);
+
+		if (m.matches()) {
+			System.out.println(email + " is valid");
+		} else {
+			System.out.println("please enter a valid email");
+		}
+	}
+
+	public static void validatePhone(String mobile) {
+
+		String phonepattern = "^[6-9]\\d{9}$";
+
+		Pattern p = Pattern.compile(phonepattern);
+
+		Matcher m = p.matcher(mobile);
+
+		if (m.matches()) {
+
+			System.out.println(mobile + "is valid phonenumber");
+		} else {
+			System.out.println("please enter an valid phone number" + mobile);
+		}
+
+	}
+
+}
