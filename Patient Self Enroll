@@ -457,8 +457,37 @@ public class Careprogram {
 		}
 	}
 
-	
+	public static void validateEmail(String email) {
+
+		String emailpattern = "String emailRegex = \"^[a-zA-Z0-9_+&*-]+(?:\\\\.[a-zA-Z0-9_+&*-]+)*@\" +\r\n"
+				+ "\"(?:[a-zA-Z0-9-]+\\\\.)+[a-zA-Z]{2,}$\";\r\n" + "";
+
+		Pattern p = Pattern.compile(emailpattern);
+		Matcher m = p.matcher(email);
+
+		if (m.matches()) {
+			System.out.println(email + " is valid");
+		} else {
+			System.out.println("please enter a valid email");
+		}
+	}
+
+	public static void validatePhone(String mobile) {
+
+		String phonepattern = "^[6-9]\\d{9}$";
+
+		Pattern p = Pattern.compile(phonepattern);
+
+		Matcher m = p.matcher(mobile);
+
+		if (m.matches()) {
+
+			System.out.println(mobile + "is valid phonenumber");
+		} else {
+			System.out.println("please enter an valid phone number" + mobile);
+		}
 
 	}
 
 }
+
